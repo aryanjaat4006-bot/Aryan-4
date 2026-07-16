@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Vidhi Darling</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body, html {
+            width: 100%;
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            background-color: #000;
+        }
+        .page {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 1;
+        }
+        .page.active {
+            display: flex;
+        }
+
+        /* FLOATING BACKGROUND EMOJIS EFFECT */
+        .bg-emoji-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .floating-emoji {
+            position: absolute;
+            font-size: 24px;
+            animation: floatBackground 12s linear infinite;
+            bottom: -50px;
+            opacity: 0.6;
+        }
+
+        /* PAGE 1: Matrix Rain & Countdown */
+        #page1 canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        .countdown-container {
+            position: relative;
+            z-index: 3;
+            font-size: 120px;
+            color: #fff;
+            font-weight: bold;
+            text-shadow: 0 0 20px rgba(255,255,255,0.8);
+            animation: pulse 1s infinite;
+        }
+        .balloon {
+            position: absolute;
+            width: 85px;
+            height: 100px;
+            border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+            z-index: 2;
+            bottom: -150px;
+            animation: floatUp 8s linear forwards;
+            box-shadow: inset -10px -10px 20px rgba(0,0,0,0.2), 0 0 15px rgba(255,255,255,0.3);
+        }
+        .balloon::before {
+            content: "";
+            position: absolute;
+            bottom: -8px;
+            left: 36px;
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+        }
+        .ribbon {
+            position: absolute;
+            top: 105px;
+            left: 38px;
+            width: 8px;
+            height: 70px;
+            background: rgba(255,255,255,0.6);
+            border-radius: 3px;
+        }
+        .ribbon-photo {
+            position: absolute;
+            bottom: -35px;
+            left: -16px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            object-fit: cover;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        /* PAGE 2: Neon Wish & Unlock Surprise */
+        #page2 {
+            background: radial-gradient(circle, #1a0033 0%, #000000 100%);
+        }
+        #page2 canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        .wish-wrapper {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: white;
+            padding: 20px;
+            max-width: 90%;
+        }
+        .wish-heading {
+            font-family: 'Georgia', serif;
+            font-style: italic;
+            font-size: 38px;
+            color: #ffe066;
+            text-shadow: 0 0 20px rgba(255, 224, 102, 0.8);
+            margin-bottom: 25px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .wish-subtext {
+            font-size: 20px;
+            line-height: 1.6;
+            color: #ffffff;
+            opacity: 0.9;
+            margin-bottom: 40px;
+            font-weight: 400;
+        }
+        .unlock-btn {
+            background: linear-gradient(90deg, #ff2a5f, #ff5e3a);
+            color: white;
+            border: none;
+            padding: 16px 45px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 0 25px rgba(255, 42, 95, 0.6);
+            letter-spacing: 1px;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .unlock-btn:active {
+            transform: scale(0.96);
+        }
+
+        /* PAGE 3: Secret Key Pink Password Page */
+        #page3 {
+            background-color: #ffeef2;
+        }
+        .pwd-card {
+            background: white;
+            padding: 30px 20px;
+            border-radius: 30px;
+            box-shadow: 0 15px 35px rgba(255, 105, 180, 0.15);
+            text-align: center;
+            max-width: 350px;
+            width: 88%;
+            border: 1px solid rgba(255, 182, 193, 0.5);
+            position: relative;
+            z-index: 2;
+        }
+        .pwd-avatar-frame {
+            width: 115px;
+            height: 115px;
+            border-radius: 50%;
+            border: 4px solid #fff;
+            margin: -80px auto 15px auto;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(255, 77, 136, 0.3);
+        }
+        .pwd-avatar-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .pwd-card h2 {
+            color: #e6005c;
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+        .pwd-card p {
+            color: #8c8c8c;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .pwd-display-box {
+            width: 100%;
+            height: 50px;
+            border: 2px solid #ffd1dc;
+            border-radius: 15px;
+            background-color: #fff9fa;
+            font-size: 22px;
+            color: #e6005c;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            letter-spacing: 4px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .keypad-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+        .key-btn {
+            background: #ffffff;
+            border: 1px solid #ffe1e8;
+            padding: 15px;
+            font-size: 20px;
+            font-weight: 600;
+            color: #d6336c;
+            border-radius: 15px;
+            cursor: pointer;
+            box-shadow: 0 3px 6px rgba(255, 182, 193, 0.1);
+            transition: 0.1s;
+        }
+        .key-btn:active {
+            background: #ffeef2;
+        }
+        .key-btn.clear-btn {
+            color: #ff4d4d;
+            background: #fff5f5;
+        }
+        .key-btn.go-btn {
+            color: #27ae60;
+            background: #ebfbe6;
+        }
+
+        /* PAGE 4: Yes/No Pop Up */
+        #page4 {
+            background: #fff0f5;
+        }
+        .popup-box {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            text-align: center;
+            position: relative;
+            max-width: 350px;
+            width: 90%;
+            border: 1px solid #ffdae0;
+            z-index: 2;
+        }
+        .popup-box h3 {
+            color: #d6336c;
+            font-size: 24px;
+            margin-bottom: 25px;
+        }
+        .btn-group {
+            display: flex;
+            justify-content: space-around;
+            position: relative;
+            height: 50px;
+        }
+        .pop-btn {
+            padding: 10px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        #yesBtn {
+            background-color: #4caf50;
+            color: white;
+        }
+        #noBtn {
+            background-color: #f44336;
+            color: white;
+            position: absolute;
+        }
+
+        /* PAGE 5: Styled Cake Page */
+        #page5 {
+            background: #ffeef2;
+        }
+        .cake-headline {
+            font-family: 'Georgia', serif;
+            font-style: italic;
+            font-size: 30px;
+            color: #ff3377;
+            margin-bottom: 50px;
+            font-weight: bold;
+            text-align: center;
+            z-index: 2;
+        }
+        .cake-container {
+            position: relative;
+            width: 240px;
+            height: 220px;
+            cursor: pointer;
+            z-index: 2;
+        }
+        .cake-layer {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 12px 12px 4px 4px;
+        }
+        .layer-bottom {
+            bottom: 0;
+            width: 220px;
+            height: 65px;
+            background: #ff6699;
+            border-bottom: 6px solid #e6005c;
+        }
+        .layer-middle {
+            bottom: 60px;
+            width: 170px;
+            height: 55px;
+            background: #ff85ad;
+            border-bottom: 5px solid #ff4d88;
+        }
+        .layer-top {
+            bottom: 110px;
+            width: 120px;
+            height: 48px;
+            background: #ffaaba;
+            border-bottom: 5px solid #ff85ad;
+        }
+        .candles-row {
+            position: absolute;
+            bottom: 155px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        .candle-stick {
+            width: 8px;
+            height: 38px;
+            background: linear-gradient(to top, #ffcc00, #ff6600);
+            border-radius: 4px;
+            position: relative;
+        }
+        .flame {
+            position: absolute;
+            top: -16px;
+            left: -3px;
+            width: 14px;
+            height: 20px;
+            background: radial-gradient(#ffffcc, #ff9900);
+            border-radius: 50% 50% 20% 20%;
+            box-shadow: 0 0 12px #ffcc00;
+            animation: flicker 0.3s infinite alternate;
+        }
+        .knife {
+            position: absolute;
+            top: 10px;
+            right: -50px;
+            font-size: 40px;
+            transform: rotate(-45deg);
+            display: none;
+        }
+
+        /* PAGE 6: Photo Page */
+        #page6 {
+            background-color: #0d0d0d;
+        }
+        .photo-gallery-card {
+            width: 85%;
+            max-width: 400px;
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 16px;
+            border: 1px solid #333;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+            text-align: center;
+            z-index: 2;
+        }
+        .photo-gallery-card img {
+            width: 100%;
+            border-radius: 12px;
+            display: block;
+            margin-bottom: 15px;
+        }
+        .photo-gallery-card button {
+            background: #ff3377;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* PAGE 7: Beautiful Pink Envelope Screen */
+        #page7 {
+            background: linear-gradient(to bottom, #1d0026, #050010);
+        }
+        .big-envelope-wrapper {
+            width: 320px;
+            height: 320px;
+            background-color: #ff0055;
+            border-radius: 20px;
+            position: relative;
+            box-shadow: 0 15px 40px rgba(255, 0, 85, 0.4);
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 2;
+            border: 2px solid #ff477e;
+        }
+        .big-envelope-wrapper .mini-mail-icon {
+            font-size: 40px;
+            background: white;
+            width: 75px;
+            height: 55px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            margin-bottom: 15px;
+        }
+        .big-envelope-wrapper h3 {
+            color: white;
+            font-size: 26px;
+            font-family: 'Georgia', serif;
+            font-style: italic;
+            font-weight: 500;
+        }
+        
+        /* Modal for Letter Layout */
+        .modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(10, 2, 15, 0.95);
+            z-index: 10;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-body {
+            background: #ffffff;
+            padding: 40px 25px;
+            border-radius: 25px;
+            width: 90%;
+            max-width: 420px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(255,255,255,0.1);
+            position: relative;
+            border: 4px solid #ff0055;
+        }
+        .modal-header-icons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            font-size: 35px;
+            margin-bottom: 25px;
+        }
+        .modal-body p {
+            font-family: 'Georgia', serif;
+            font-style: italic;
+            font-size: 19px;
+            color: #40001a;
+            line-height: 2;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .close-modal {
+            background: transparent;
+            color: #ff0055;
+            border: 2px solid #ff0055;
+            padding: 10px 30px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 15px;
+            transition: 0.3s;
+        }
+        .close-modal:active {
+            background: #ff0055;
+            color: white;
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-120vh) rotate(20deg); opacity: 0; }
+        }
+        @keyframes flicker {
+            0% { transform: scale(1) rotate(-2deg); }
+            100% { transform: scale(1.1) rotate(2deg); }
+        }
+        @keyframes floatBackground {
+            0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-105vh) translateX(50px) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PAGE 1: Matrix Rain & Balloons Countdown -->
+    <div id="page1" class="page active">
+        <canvas id="matrixCanvas"></canvas>
+        <div class="countdown-container" id="countdownBox">5</div>
+    </div>
+
+    <!-- PAGE 2: Happy Birthday Dynamic Screen -->
+    <div id="page2" class="page">
+        <canvas id="fireworksCanvas"></canvas>
+        <div class="wish-wrapper">
+            <div class="wish-heading">❤️ Happy Birthday Darling ❤️</div>
+            <div class="wish-subtext">
+                You are incredibly special.<br>
+                Wishing you the most beautiful day! ✨
+            </div>
+            <button class="unlock-btn" onclick="nextPage(3)">UNLOCK SURPRISE 🔒</button>
+        </div>
+    </div>
+
+    <!-- PAGE 3: Recreated Password Card with Custom Pad -->
+    <div id="page3" class="page">
+        <!-- Floating Emojis Background -->
+        <div class="bg-emoji-layer" id="page3Emojis"></div>
+        
+        <div class="pwd-card">
+            <div class="pwd-avatar-frame">
+                <img src="photo9.jpg" alt="Vidhi Picture">
+            </div>
+            <h2>Enter Secret Key 🌸</h2>
+            <p>Check your special day / passcode</p>
+            
+            <div class="pwd-display-box" id="pwdDisplay"></div>
+            
+            <div class="keypad-grid">
+                <button class="key-btn" onclick="pressKey('1')">1</button>
+                <button class="key-btn" onclick="pressKey('2')">2</button>
+                <button class="key-btn" onclick="pressKey('3')">3</button>
+                <button class="key-btn" onclick="pressKey('4')">4</button>
+                <button class="key-btn" onclick="pressKey('5')">5</button>
+                <button class="key-btn" onclick="pressKey('6')">6</button>
+                <button class="key-btn" onclick="pressKey('7')">7</button>
+                <button class="key-btn" onclick="pressKey('8')">8</button>
+                <button class="key-btn" onclick="pressKey('9')">9</button>
+                <button class="key-btn clear-btn" onclick="pressKey('Clear')">Clear</button>
+                <button class="key-btn" onclick="pressKey('0')">0</button>
+                <button class="key-btn go-btn" onclick="pressKey('Go')">Go</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGE 4: Yes/No Pop-up Box -->
+    <div id="page4" class="page">
+        <div class="popup-box">
+            <h3>Do you love your bestie? 😉</h3>
+            <div class="btn-group">
+                <button class="pop-btn" id="yesBtn" onclick="nextPage(5)">Yes</button>
+                <button class="pop-btn" id="noBtn" onmouseover="moveNoButton()" onclick="moveNoButton()">No</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGE 5: Recreated Cake Cutting Screen -->
+    <div id="page5" class="page">
+        <div class="bg-emoji-layer" id="page5Emojis"></div>
+        
+        <div class="cake-headline" id="cakeInstruction">Blow the Candles and Cut the Cake!</div>
+        <div class="cake-container" id="cakeWrap" onclick="handleCakeInteraction()">
+            <div class="candles-row" id="candlesRow">
+                <div class="candle-stick"><div class="flame"></div></div>
+                <div class="candle-stick"><div class="flame"></div></div>
+                <div class="candle-stick"><div class="flame"></div></div>
+            </div>
+            <div class="cake-layer layer-top"></div>
+            <div class="cake-layer layer-middle"></div>
+            <div class="cake-layer layer-bottom"></div>
+            <div class="knife" id="knifeEl">🔪</div>
+        </div>
+    </div>
+
+    <!-- PAGE 6: Photo Frame Display Page -->
+    <div id="page6" class="page">
+        <div class="photo-gallery-card">
+            <img src="photo9.jpg" alt="Vidhi Special Moment">
+            <h3 style="color:#fff; margin-bottom:10px;">The Most Beautiful Face ✨</h3>
+            <button onclick="nextPage(7)">Read Special Wishes</button>
+        </div>
+    </div>
+
+    <!-- PAGE 7: Beautiful Large Pink Envelope -->
+    <div id="page7" class="page">
+        <div class="bg-emoji-layer" id="page7Emojis"></div>
+        
+        <div class="big-envelope-wrapper" onclick="openLetterModal()">
+            <div class="mini-mail-icon">✉️</div>
+            <h3>Tap to Open</h3>
+        </div>
+    </div>
+
+    <!-- Letter Content Popup Modal Overlay -->
+    <div class="modal" id="letterModal">
+        <div class="modal-body">
+            <div class="modal-header-icons">📩 🤍</div>
+            <p>
+                Lagta hai aaj ke din Bhagwan ne fursat se ek bahut hi khoobsurat insaan banaya hoga. ❤️<br><br>
+                Phir usme pyaari si muskaan, saaf dil aur duniya se bilkul alag ek khoobsurat shaksiyat bhar di hogi. 🌸<br><br>
+                Tabhi to aaj ka din itna khaas hai... ✨<br><br>
+                <span style="color: #ff0055; font-weight: bold; font-size: 20px;">🎂 Happy Birthday vidhi darling ...</span>
+            </p>
+            <button class="close-modal" onclick="closeLetterModal()">Close with Love</button>
+        </div>
+    </div>
+
+    <script>
+        // System Navigation Engine
+        let currentPassword = "";
+
+        function nextPage(pageNumber) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('page' + pageNumber).classList.add('active');
+            
+            if(pageNumber === 2) initFireworks();
+            if(pageNumber === 3) startFloatingEmojis('page3Emojis');
+            if(pageNumber === 5) startFloatingEmojis('page5Emojis');
+            if(pageNumber === 7) startFloatingEmojis('page7Emojis');
+        }
+
+        /* --- KEYPAD FUNCTIONALITY --- */
+        function pressKey(key) {
+            const display = document.getElementById('pwdDisplay');
+            if (key === 'Clear') {
+                currentPassword = "";
+            } else if (key === 'Go') {
+                // Yaha aap apna password set kar sakte hai. Default "1234" ya blank check:
+                if (currentPassword === "1234" || currentPassword === "") {
+                    nextPage(4);
+                } else {
+                    alert("Wrong Code! Try again.");
+                    currentPassword = "";
+                }
+            } else {
+                if (currentPassword.length < 4) {
+                    currentPassword += key;
+                }
+            }
+            display.textContent = "*".repeat(currentPassword.length);
+        }
+
+        /* --- FLOATING EMOJIS BACKGROUND --- */
+        const emojiPool = ['❤️', '💖', '🌸', '✨', '🤍', '🥰', '🎈'];
+        function startFloatingEmojis(layerId) {
+            const layer = document.getElementById(layerId);
+            if (!layer || layer.children.length > 0) return;
+            
+            for (let i = 0; i < 25; i++) {
+                const span = document.createElement('span');
+                span.className = 'floating-emoji';
+                span.textContent = emojiPool[Math.floor(Math.random() * emojiPool.length)];
+                span.style.left = Math.random() * 100 + '%';
+                span.style.animationDelay = Math.random() * 8 + 's';
+                span.style.fontSize = (Math.random() * 15 + 18) + 'px';
+                layer.appendChild(span);
+            }
+        }
+
+        /* --- MATRIX CODE --- */
+        const canvas = document.getElementById('matrixCanvas');
+        const ctx = canvas.getContext('2d');
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+
+        const alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        const fontSize = 16;
+        const columns = width / fontSize;
+        const rainDrops = Array(Math.floor(columns)).fill(1);
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, width, height);
+            ctx.fillStyle = '#ffffff';
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < rainDrops.length; i++) {
+                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+                ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
+                if (rainDrops[i] * fontSize > height && Math.random() > 0.975) {
+                    rainDrops[i] = 0;
+                }
+                rainDrops[i]++;
+            }
+        }
+        let matrixInterval = setInterval(drawMatrix, 30);
+
+        /* --- BALLOONS COUNTDOWN ENGINE --- */
+        let count = 5;
+        const countdownBox = document.getElementById('countdownBox');
+        const balloonColors = ['#ff66a3', '#ff3377', '#ff99bb', '#ffccd5', '#ff4d88'];
+        const balloonImages = ['photo1.jpg', 'photo2.jpg', 'photo3.jpg', 'photo4.jpg', 'photo5.jpg', 'photo6.jpg', 'photo7.jpg', 'photo8.jpg'];
+
+        function createBalloon(index) {
+            const b = document.createElement('div');
+            b.className = 'balloon';
+            b.style.backgroundColor = balloonColors[index % balloonColors.length];
+            b.style.left = (5 + index * 11) + '%';
+            b.style.animationDelay = (index * 0.2) + 's';
+
+            const ribbon = document.createElement('div');
+            ribbon.className = 'ribbon';
+
+            const img = document.createElement('img');
+            img.className = 'ribbon-photo';
+            img.src = balloonImages[index % balloonImages.length];
+            img.onerror = function() { this.style.display = 'none'; };
+
+            ribbon.appendChild(img);
+            b.appendChild(ribbon);
+            document.getElementById('page1').appendChild(b);
+        }
+
+        let countdownTimer = setInterval(() => {
+            count--;
+            if(count > 0) {
+                countdownBox.textContent = count;
+            } else {
+                clearInterval(countdownTimer);
+                clearInterval(matrixInterval);
+                for(let i=0; i<8; i++) { createBalloon(i); }
+                setTimeout(() => { nextPage(2); }, 3500);
+            }
+        }, 1000);
+
+        /* --- FIREWORKS CODE --- */
+        const fwCanvas = document.getElementById('fireworksCanvas');
+        const fwCtx = fwCanvas.getContext('2d');
+        let fwParticles = [];
+
+        function initFireworks() {
+            fwCanvas.width = window.innerWidth;
+            fwCanvas.height = window.innerHeight;
+            animateFireworks();
+            setInterval(() => {
+                createFirework(Math.random() * fwCanvas.width, Math.random() * fwCanvas.height * 0.6);
+            }, 600);
+        }
+
+        function createFirework(x, y) {
+            const colors = ['#ff3377', '#ffcc00', '#33ccff', '#ff6600', '#99ff33'];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            for (let i = 0; i < 40; i++) {
+                fwParticles.push({
+                    x: x, y: y,
+                    vx: (Math.random() - 0.5) * 6,
+                    vy: (Math.random() - 0.5) * 6,
+                    alpha: 1,
+                    color: color
+                });
+            }
+        }
+
+        function animateFireworks() {
+            requestAnimationFrame(animateFireworks);
+            fwCtx.fillStyle = 'rgba(0,0,0,0.15)';
+            fwCtx.fillRect(0, 0, fwCanvas.width, fwCanvas.height);
+
+            for (let i = fwParticles.length - 1; i >= 0; i--) {
+                let p = fwParticles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.04; 
+                p.alpha -= 0.015;
+                if (p.alpha <= 0) {
+                    fwParticles.splice(i, 1);
+                    continue;
+                }
+                fwCtx.save();
+                fwCtx.globalAlpha = p.alpha;
+                fwCtx.fillStyle = p.color;
+                fwCtx.beginPath();
+                fwCtx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+                fwCtx.fill();
+                fwCtx.restore();
+            }
+        }
+
+        /* --- CAKE INTERACTION --- */
+        let cakeState = 0; 
+        function handleCakeInteraction() {
+            const instruction = document.getElementById('cakeInstruction');
+            const flames = document.querySelectorAll('.flame');
+            const knife = document.getElementById('knifeEl');
+
+            if (cakeState === 0) {
+                flames.forEach(f => f.style.display = 'none');
+                instruction.textContent = "🎂 Now tap on the cake to cut it!";
+                knife.style.display = 'block';
+                cakeState = 1;
+            } else if (cakeState === 1) {
+                knife.style.transform = 'translate(-40px, 40px) rotate(-90deg)';
+                instruction.textContent = "✨ Beautifully Cut!";
+                setTimeout(() => {
+                    nextPage(6);
+                }, 1200);
+            }
+        }
+
+        /* --- NO BUTTON FUNNY MOVE --- */
+        function moveNoButton() {
+            const btn = document.getElementById('noBtn');
+            const x = Math.random() * (window.innerWidth - 120);
+            const y = Math.random() * (window.innerHeight - 60);
+            btn.style.left = x + 'px';
+            btn.style.top = y + 'px';
+        }
+
+        /* --- MODAL DIALOGS --- */
+        function openLetterModal() {
+            document.getElementById('letterModal').style.display = 'flex';
+        }
+        function closeLetterModal() {
+            document.getElementById('letterModal').style.display = 'none';
+        }
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            if(fwCanvas) {
+                fwCanvas.width = window.innerWidth;
+                fwCanvas.height = window.innerHeight;
+            }
+        });
+    </script>
+</body>
+</html>
